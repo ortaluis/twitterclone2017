@@ -30,21 +30,40 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        #Response auf brower request
         self._set_headers()
 
         print self.path
 
+        #What to do if a user enter in a browser just: http://localhost
         if self.path == "/":
             last_username = self.r_server.get('last_username')
+            numberOfUsers = self.r_server.get('counter')
+            #resultNumberOfUsers = self.r_server.hget('usersNumber', 'numberOfUsers')
+
+            print 'Test: %s' + numberOfUsers
 
             if not last_username:
                 last_username = "EMPTY"
 
             with open('index.html', 'r') as myfile:
                 data=myfile.read().replace('#last_username#',last_username)
+                #data=myfile.read().replace('#usersNumber#',numberOfUsers)
                 self.wfile.write(data)
+
         elif self.path == "/help":
             self.wfile.write("This is an example help page!")
+
+        elif self.path == "/sign-up":
+            last_username = self.r_server.get('last_username')
+
+            if not last_username:
+                last_username = "EMPTY"
+
+            with open('sign-up.html', 'r') as myfile:
+                data=myfile.read().replace('#last_username#',last_username)
+                self.wfile.write(data)
+
         else:
             self.wfile.write("Page not found!")
 
@@ -53,20 +72,57 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         
     def do_POST(self):
-       
+        # what to do with the submitted data from the user
         self._set_headers()
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        self.r_server.set('counter', 1)
 
-        if(self.path == "/submit-username"):
+        #If the data belongs to a form with this tag.. (that was defined in index.html- the data of do_GET)    
+        if(self.path == "/submit-exist"):
+            post_data = self.rfile.read(content_length) # <--- Gets the data itself
+            parsed_data = parse_qs(post_data)
+
+            with open('my-twitter.html', 'r') as myfile:
+                data=myfile.read()
+                self.wfile.write(data)
+
+
+        elif(self.path == "/submit-username"):
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
             parsed_data = parse_qs(post_data)
 
             self.r_server.set('last_username', parsed_data['username'][0])
+            self.r_server.set('last_password', parsed_data['password'][0])
+
+            self.r_server.set(parsed_data['username'][0],parsed_data['password'][0])
+            print 'previous set the value: ' + self.r_server.get(parsed_data['username'][0])
+
+            self.r_server.hset('users', parsed_data['username'][0],parsed_data['password'][0] )
+            print 'the value for this key in the hash is %s:'% self.r_server.hget('users',parsed_data['username'][0] )
+
+            self.r_server.incr('counter',1)
 
             with open('username-received.html', 'r') as myfile:
                 data=myfile.read()
                 data=data.replace('#username#', parsed_data['username'][0])
+                data=data.replace('#password#', parsed_data['password'][0])
                 self.wfile.write(data)
+
+
+        elif self.path == "/submit-login":
+            post_data = self.rfile.read(content_length) # <--- Gets the data itself
+            parsed_data = parse_qs(post_data)
+
+            #self.numberOfUsers += 1
+            #self.r_server.hset('usersNumber', 'numberOfUsers' ,self.numberOfUsers)
+            #print 'the number of users is %s:'% self.r_server.hget('usersNumber', 'numberOfUsers')
+
+            with open('login-received.html', 'r') as myfile:
+                data=myfile.read()
+                data=data.replace('#name#', parsed_data['name'][0])
+                self.wfile.write(data)
+
+
         else:
             self.wfile.write("Form handler not found!")
         
