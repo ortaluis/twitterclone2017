@@ -1,7 +1,38 @@
 <html>
 <body>
-<h1>POST!</h1>
-I have successfully saved the username '#username#' to Reddis!
-<a href="/">Go back</a>
+<title>
+	Login In to Twitter
+</title>
+<center>
+
+<img src="https://www.webceo.com/blog/wp-content/uploads/2015/11/twitter.jpg" width="200" height="200" alt="Twiiter logo" />
+
+<h2>POST!</h2>
+I have successfully saved the username '#username#' to Reddis!<br/> 
+Your password is: '#password#'<br/>
+<a href="/">Go back</a><br/>
+
+
+<p> Please enter your information:
+<form method="post" action="/submit-login"> 
+ 
+
+<p>Name:</p>
+    <p><input type="text" name="name" value="Your name" /></p>
+    <p><input type="text" name="lastname" value="Your lastname" /></p>
+<p>Comments: </p>
+    <p><textarea name="comments" rows="5" cols="20">Your comments</textarea></p>
+<p>Are you:</p>
+    <p><input type="radio" name="areyou" value="male" /> Male</p>
+    <p><input type="radio" name="areyou" value="female" /> Female</p>
+<p><input type="submit" /></p>
+<p><input type="reset" /></p>
+
+</form>
+<br/>
+
+</p>
+
+</center>
 </body>
 </html>
