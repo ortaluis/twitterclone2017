@@ -1,0 +1,23 @@
+def newuser (userid):
+    db0 = client.followers
+    followers = db0.followers.insert_one(
+        {
+            "user": userid,
+            "followers": [],
+        }
+    )
+    db1 = client.followings
+    followings = db1.followings.insert_one(
+        {
+            "user": userid,
+            "followings": [],
+        }
+    )
+    db2 = client.likes
+    likes = db2.likes.insert_one(
+        {
+            "user": userid,
+            "likes": [],
+        }
+    )
+    return

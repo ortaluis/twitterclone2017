@@ -10,6 +10,7 @@ userfoll2 = "19828719"
 id_tweet = "595ac1c65452123a2cbb5596"
 tweet__post = "Hello World 5"
 
+# Tweets
 
 def tweetpost(userid, tweepost):
     if len(tweepost) < 140:
@@ -19,6 +20,7 @@ def tweetpost(userid, tweepost):
             "tweet_post": tweepost,
             "rt": 0,
             "reply": 0,
+            "like": 0,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
         )
@@ -41,69 +43,92 @@ def getusertimeline(userid):
         print(document)
     return
 
-
-def newuser (userid):
-    db0 = client.followers
-    followers = db0.followers.insert_one(
-        {
-            "user": userid,
-            "followers": [],
-        }
-    )
-    db1 = client.followings
-    followings = db1.followings.insert_one(
-        {
-            "user": userid,
-            "followings": [],
-        }
-    )
-    db2 = client.likes
-    likes = db2.likes.insert_one(
-        {
-            "user": userid,
-            "likes": [],
-        }
-    )
-    return
-
-
-def addfollower(userid, useridfollower):
-    db = client.followers
-    add = db.followers.find_one_and_update({'user': userid}, {'$push': {'followers': {
-            "follower": useridfollower,
-            "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }}})
-    return
-
+# Following
 
 def addfollowing(userid, useridfollowing):
     db = client.followings
-    add = db.followings.find_one_and_update({'user': userid}, {'$push': {'followings': {
-        "following": useridfollowing,
-        "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    }}})
+    if db.followings.find({"user": userid, "following": useridfollowing}):
+        print "User is already followed"
+    else:
+        add = db.followings.insert_one({
+            "user": userid,
+            "following": useridfollowing,
+            "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            })
     return
 
 
 def delfollowing(userid, useridfoll):
     db = client.followings
-    remove = db.followings.find_one_and_update({'user': userid}, {'$pull': {'followings': {"following": useridfoll}}})
+    remove = db.followings.find_one_and_delete({"user": userid, "following": useridfoll})
     print(useridfoll + " was unfollowed")
     return
 
 
+# Followers
+
+def addfollower(userid, useridfollower):
+    db = client.followers
+    if client.followers.find({"user": userid, "follower": useridfollower}):
+    else:
+        add = db.followers.insert_one({
+            "user": userid,
+            "follower": useridfollower,
+            "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            })
+    return
+
+#Likes
+
 def addlike(userid, idtweet):
     db = client.likes
-    add = db.likes.find_one_and_update({'user': userid}, {'$push': {'likes': {"tweetliked": idtweet}}})
+    if db.likes.find({"user": userid, "tweetliked": idtweet}):
+        print "Tweet already added"
+    else:
+        add = db.likes.insert_one({"user": userid, "tweetliked": idtweet})
     return
 
 
 def dellike(userid, idtweet):
     db = client.likes
-    remove = db.likes.find_one_and_delete({"user": userid}, {'$pull': {'likes': {"tweetliked": idtweet}}})
+    remove = db.likes.find_one_and_delete({"user": userid, "tweetliked": idtweet})
     print ("Tweet deleted from likes")
     return
 
+
+#Counters
+
+def counttweets(userid):
+    db = client.tweets
+    ctweets = db.tweets.find({"user": userid}).count()
+    return ctweets
+
+
+def countfollowers(userid):
+    db = client.followers
+    cfollowers = db.followers.find({"user": userid}).count()
+    return cfollowers
+
+
+def countfollowings(userid):
+    db = client.followings
+    cfollowings = db.followings.find({"user": userid}).count()
+    return cfollowings
+
+
+def countlikes(userid):
+    db = client.likes
+    clikes = db.likes.find({"user": userid}).count()
+    return clikes
+
+
+
+
+
+#x = countfollowers(user_id)
+#x = countfollowings(user_id)
+#x = counttweets(user_id)
+#print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
@@ -113,4 +138,5 @@ def dellike(userid, idtweet):
 #addfollowing(user_id, userfoll1)
 #newuser(user_id)
 #getusertimeline(user_id)
+addlike(user_id, id_tweet)
 
