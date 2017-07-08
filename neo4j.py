@@ -6,7 +6,7 @@ import tw_app
 graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
 
 
-graph.delete_all()
+#test233232
 client = MongoClient('mongodb://localhost:27017/')
 
 user1 = "olga"
