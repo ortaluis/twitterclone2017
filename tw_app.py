@@ -144,8 +144,15 @@ def getfollowins(userid):
         list.append(doc)
     return list
 
+def getfollowers(userid):
+    db = client.followers
+    result = db.followers.find({"user": userid})
+    list = []
+    for doc in result:
+        list.append(doc)
+    return list
 
-x = getfollowins(user_id)
+x = getfollowers(user_id)
 
 
 
