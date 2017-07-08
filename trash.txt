@@ -21,3 +21,28 @@ def newuser (userid):
         }
     )
     return
+
+
+"var list = [];"
+    "for (var i = 0; i < values.length; i++) {"
+    "list = value [i];"
+    "}"
+
+reduce = Code("function(Key,value)"
+        "var list = [];"
+        "for (var i = 0; i < values.length; i++) {"
+        "list = value [i];"
+        "}"
+        "return list;")
+
+
+this works
+map = Code("function() { emit(this.user, this.following);}")
+    reduce = Code("function(Key, value){"
+                  "var list = [];"
+                  "for (var i = 0; i < value.length; i++) {"
+                  "list.fill = value[i];"
+                  "}"
+                  "return list;"
+                  "}")
+    results = db.followings.map_reduce(map, reduce, "listfollowing")
