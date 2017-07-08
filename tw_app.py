@@ -8,15 +8,15 @@ import pprint
 
 client = MongoClient('mongodb://localhost:27017/')
 
-user_id = "19828717"
-userfoll1 = "19828718"
-userfoll2 = "19828719"
-userfoll3 = "19828720"
-userfoll4 = "19828721"
-userfoll5 = "19828722"
-userfoll6 = "19828723"
-id_tweet = "595e48ce77a3f2c6f85e6c6f"
-tweet__post = "Hello World 7"
+#user_id = "19828717"
+#userfoll1 = "19828718"
+#userfoll2 = "19828719"
+#userfoll3 = "19828720"
+#userfoll4 = "19828721"
+#userfoll5 = "19828722"
+#userfoll6 = "19828723"
+#id_tweet = "595e48ce77a3f2c6f85e6c6f"
+#tweet__post = "Hello World 7"
 
 # like this???
 # Tweets
