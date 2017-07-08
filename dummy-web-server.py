@@ -15,7 +15,7 @@ Send a POST request::
     curl -d "foo=bar&bin=baz" http://localhost
 
 """
-#from pymongo import MongoClient
+from pymongo import MongoClient
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import SocketServer
@@ -24,7 +24,7 @@ import redis
 class S(BaseHTTPRequestHandler):
 
     r_server = redis.Redis('localhost')
- #   client = MongoClient()
+    client = MongoClient('mongodb://localhost:27017/')
 
     def _set_headers(self):
         self.send_response(200)

@@ -138,19 +138,21 @@ def countlikes(userid):
 
 def getfollowins(userid):
     db = client.followings
-    result = db.followings.agregate({ '$group:' { _id: "user", "followings": { $sum : 1} } })
+    result = db.followings.find({"user": userid})
+    list = []
+    for doc in result:
+        list.append(doc)
+    return list
 
 
-    return
-
-getfollowins(user_id)
+x = getfollowins(user_id)
 
 
 
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-#print x
+print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
