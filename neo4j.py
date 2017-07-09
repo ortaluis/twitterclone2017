@@ -1,14 +1,14 @@
 
 from py2neo import Graph, Node, Relationship
-from pymongo import MongoClient
-import tw_app
 
 
 
 graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
-client = MongoClient('mongodb://localhost:27017/')
+
+
 
 #---------- Add new Node --------------------
+
 def add_node(user_name):
    if not graph.find_one("User","name",user_name):
         new_node = Node("User", name=user_name)
@@ -20,6 +20,7 @@ def add_node(user_name):
 def add_rel(node1, node2):
 
     aa = graph.find_one("User","name",node1)
+
     bb = graph.find_one("User", "name", node2)
 
     following = Relationship(aa, "follows", bb)
@@ -41,18 +42,24 @@ def print_all():
     for record in graph.run("MATCH (p:User) RETURN p.name AS name"):
         print(record[0])
 
-#------------ Find a relationship -------
-
-def print_rel():
-    aa = graph.find_one("User", "name", "Wagdi")
-
-    for rel in graph.match(start_node=aa, rel_type="follows"):
-        print(rel.end_node.properties["name"])
 
 
+#--------- Related nodes -----------
 
+def related_nodes(user):
 
+    a = user
 
+    for record in graph.run("MATCH (director { name: {X} })--(User) RETURN User.name", X = a):
+     print(record[0])
 
+#----------------Suggition
+def sugg(user):
 
+    b = user
+    tre = graph.run("MATCH (person:User)-[:follows]-(friend:User)-[:follows]-(foaf:User) WHERE  person.name = {z} AND NOT (person)-[:follows]-(foaf) RETURN foaf", z = b);
+    for k in tre:
+         print k
+
+#---------------------------------------------------
 
