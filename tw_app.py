@@ -1,11 +1,9 @@
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
-from py2neo import Graphs, Node, Relationship
 from bson.code import Code
-import pprint
 
-
+#graph = Graph("http://neo4j:123@localhost:7474/db/data/")
 client = MongoClient('mongodb://localhost:27017/')
 
 user_id = "19828717"
@@ -16,9 +14,9 @@ userfoll4 = "19828721"
 userfoll5 = "19828722"
 userfoll6 = "19828723"
 id_tweet = "595e48ce77a3f2c6f85e6c6f"
-tweet__post = "Hello World 7"
+tweet__post = "#Luis #is #trying #the #hastag #funtion #and #one #more #time"
 
-# like this???
+
 # Tweets
 
 def tweetpost(userid, tweepost):
@@ -44,15 +42,27 @@ def deletedtweet(userid, idtweet):
     print ("Tweet deleted")
     return
 
-
 # Timeline
 
 def getusertimeline(userid):
     db = client.tweets
-    cursor = db.tweets.find({"user": userid}).sort("date", -1)
+    cursor = db.tweets.find({"user": userid}, {'_id': False}).sort("date", -1)
     for document in cursor:
         print(document)
     return
+
+
+def gettimeline(userid):
+    db = client.followings
+    db2 = client.tweets
+    follwi = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True, })
+    foll = []
+    for doc in foll:
+        #foll.append(doc)
+        print (doc)
+    return
+
+gettimeline(user_id)
 
 # Following
 
@@ -67,6 +77,7 @@ def addfollowing(userid, useridfollowing):
             "following": useridfollowing,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
+        #nodeuser =
     return
 
 
@@ -135,12 +146,10 @@ def countlikes(userid):
     clikes = db.likes.find({"user": userid}).count()
     return clikes
 
-# MapReduce
-
 
 def getfollowins(userid):
     db = client.followings
-    result = db.followings.find({"user": userid})
+    result = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True})
     list = []
     for doc in result:
         list.append(doc)
@@ -148,20 +157,64 @@ def getfollowins(userid):
 
 def getfollowers(userid):
     db = client.followers
-    result = db.followers.find({"user": userid})
+    result = db.followers.find({"user": userid}, {'_id': False, "user": False, "follower": True})
     list = []
     for doc in result:
         list.append(doc)
     return list
 
-x = getfollowers(user_id)
+# Trending Topic
 
+def trendingtopic(userid):
+    db = client.tweets
+    map = Code("""
+    function() {
+    var word = this.tweet_post.split(" ");
 
+    for (var i = word.length - 1; i >= 0; i--) {
+        if (word[i])  {
+            emit(word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    
+    for (var i = word.length - 1; i > 0; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#"))  {
+            emit(word[i-1].replace(/",@"/g, "").trim() + " " + word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    for (var i = word.length - 1; i > 1; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#") || (word[i-2].charAt(0) != "#"))  {
+            emit(word[i-2].replace(/",@"/g, "").trim() + " " + word[i-1].replace(/",@"/g, "").trim()+ " " + word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    
+    for (var i = word.length - 1; i > 2; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#") || (word[i-2].charAt(0) != "#") || (word[i-3].charAt(0) != "#"))  {
+            emit(word[i-3].replace(/",@"/g, "").trim() + " " + word[i-2].replace(/",@"/g, "").trim()+ " " + word[i-1].replace(/",@"/g, "").trim(), 1)+ " " + word[i].replace(/",@"/g, "");
+            }
+    }
+    
+    };
+    """)
+    red = Code("function (key, values) {"
+            "var total = 0;"
+            "for (var i = 0; i < values.length; i++) {"
+            "total += values[i];"
+            "  }"
+            "  return total;"
+            "}")
+    result = db.tweets.map_reduce(map, red, "Trending Topic Global")
+    for doc in result.find().sort("value", -1).limit(10):
+        print doc
+    return
 
+#trendingtopic(user_id)
+
+#x = getfollowers(user_id)
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-print x
+#print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
@@ -175,5 +228,6 @@ print x
 #addfollowing(user_id, userfoll6)
 #newuser(user_id)
 #getusertimeline(user_id)
+#gettimeline(user_id, x)
 #addlike(user_id, id_tweet)
-#getfollowing(user_id)
+

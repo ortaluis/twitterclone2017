@@ -20,6 +20,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import SocketServer
 import redis
+import tw_app
 
 class S(BaseHTTPRequestHandler):
 

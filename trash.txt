@@ -28,12 +28,37 @@ def newuser (userid):
     "list = value [i];"
     "}"
 
-reduce = Code("function(Key,value)"
-        "var list = [];"
-        "for (var i = 0; i < values.length; i++) {"
-        "list = value [i];"
-        "}"
-        "return list;")
+reduce = Code(
+        function(Key,value)
+        var list = [];
+        for (var i = 0; i < values.length; i++) {
+        list = value [i];
+        }
+        return list;)
+
+"""
+    function() {
+    var words = this.tweet_post.split(" ");
+    for (i in words){
+    var word = words[i];;
+    if (word.lenght > 0){
+    emit(word.toLowerCase(), 1);
+    }
+    };
+    }
+    """
+
+"""
+    function() {
+    var words = this.tweet_post.split(" ");
+    for (i in words){
+    var word = words[i];;
+    if (word.lenght > 0){
+    emit(word.toLowerCase(), 1);
+    }
+    };
+    }
+    """
 
 
 this works
@@ -56,3 +81,8 @@ map = Code("function() { emit(this.user, this.following);}")
     {u'following': u'19828721', u'date': u'2017-07-07 17:19:09', u'_id': ObjectId('595fa66d77a3f2e363efe986'), u'user': u'19828717'},
     {u'following': u'19828722', u'date': u'2017-07-07 17:19:17', u'_id': ObjectId('595fa67577a3f2e3752762cb'), u'user': u'19828717'},
     {u'following': u'19828723', u'date': u'2017-07-07 17:19:26', u'_id': ObjectId('595fa67e77a3f2e37f9247ce'), u'user': u'19828717'}]
+
+    if (word[i].charAt(0) != "#")  {
+                emit(word[i].replace(/","/g, "").trim(), 1);
+                }
+            else{
