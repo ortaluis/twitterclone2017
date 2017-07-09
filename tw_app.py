@@ -1,12 +1,25 @@
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
-from py2neo import Graphs, Node, Relationship
+from py2neo import Graph, Node, Relationship
 from bson.code import Code
 import pprint
 
 
 client = MongoClient('mongodb://localhost:27017/')
+graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
+
+
+
+
+#following = Relationship(o,"follows", g)
+#graph.create(following)
+
+
+
+
+
+
 
 #user_id = "19828717"
 #userfoll1 = "19828718"
@@ -58,15 +71,21 @@ def getusertimeline(userid):
 
 
 def addfollowing(userid, useridfollowing):
+
+
     db = client.followings
     if db.followings.find_one({"user": userid, "following": useridfollowing}):
         print "User is already followed"
+
+
     else:
         add = db.followings.insert_one({
             "user": userid,
             "following": useridfollowing,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
+
+
     return
 
 
@@ -154,14 +173,14 @@ def getfollowers(userid):
         list.append(doc)
     return list
 
-x = getfollowers(user_id)
+#x = getfollowers(user_id)
 
 
 
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-print x
+#print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
