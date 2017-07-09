@@ -52,17 +52,17 @@ def getusertimeline(userid):
     return
 
 
-def gettimeline(userid):
-    db = client.followings
-    db2 = client.tweets
-    follwi = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True, })
-    foll = []
-    for doc in foll:
-        #foll.append(doc)
-        print (doc)
-    return
+#def gettimeline(userid):
+#    db = client.followings
+#    db2 = client.tweets
+#    follwi = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True, })
+#    foll = []
+#    for doc in foll:
+#        #foll.append(doc)
+#        print (doc)
+#    return
 
-gettimeline(user_id)
+#gettimeline(user_id)
 
 # Following
 
@@ -80,6 +80,7 @@ def addfollowing(userid, useridfollowing):
         #nodeuser =
     return
 
+#addfollowing(user_id, "19828728")
 
 def delfollowing(userid, useridfoll):
     db = client.followings
@@ -90,9 +91,10 @@ def delfollowing(userid, useridfoll):
 
 # Followers
 
+
 def addfollower(userid, useridfollower):
     db = client.followers
-    if client.followers.find_one({"user": userid, "follower": useridfollower}):
+    if db.followers.find_one({"user": userid, "follower": useridfollower}):
         print "Follower already exists"
     else:
         add = db.followers.insert_one({
@@ -100,8 +102,9 @@ def addfollower(userid, useridfollower):
             "follower": useridfollower,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
-
     return
+
+addfollower(user_id, "19828728")
 
 #Likes
 
@@ -155,6 +158,7 @@ def getfollowins(userid):
         list.append(doc)
     return list
 
+
 def getfollowers(userid):
     db = client.followers
     result = db.followers.find({"user": userid}, {'_id': False, "user": False, "follower": True})
@@ -164,6 +168,7 @@ def getfollowers(userid):
     return list
 
 # Trending Topic
+
 
 def trendingtopic(userid):
     db = client.tweets
@@ -210,11 +215,11 @@ def trendingtopic(userid):
 
 #trendingtopic(user_id)
 
-#x = getfollowers(user_id)
+x = getfollowers(user_id)
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-#print x
+print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
