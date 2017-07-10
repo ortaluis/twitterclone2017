@@ -134,12 +134,9 @@ class S(BaseHTTPRequestHandler):
             #like this example: you can set stuff in redis
             #'here!!' we defined a variable that we want later to use in a page in html..
             self.r_server.set('last_username', parsed_data['username'][0])
-
             self.r_server.set('last_password', parsed_data['password'][0])
 
             self.r_server.set(parsed_data['username'][0],parsed_data['password'][0])
-
-
 
             print 'previous key set the value: ' + self.r_server.get(parsed_data['username'][0])
 
