@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
-from py2neo import Graph, Node, Relationship
 from bson.code import Code
 import python_neo4j
 import pprint
