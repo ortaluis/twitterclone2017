@@ -1,10 +1,13 @@
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
+from py2neo import Graph, Node, Relationship
 from bson.code import Code
+import pprint
 
-#graph = Graph("http://neo4j:123@localhost:7474/db/data/")
+
 client = MongoClient('mongodb://localhost:27017/')
+graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
 
 user_id = "19828717"
 userfoll1 = "19828718"
@@ -16,7 +19,7 @@ userfoll6 = "19828723"
 id_tweet = "595e48ce77a3f2c6f85e6c6f"
 tweet__post = "#Luis #is #trying #the #hastag #funtion #and #one #more #time"
 
-
+# like this???
 # Tweets
 
 def tweetpost(userid, tweepost):
@@ -41,6 +44,7 @@ def deletedtweet(userid, idtweet):
     add = db.tweets.find_one_and_delete({'_id': ObjectId(idtweet), "user": userid})
     print ("Tweet deleted")
     return
+
 
 # Timeline
 
@@ -77,10 +81,8 @@ def addfollowing(userid, useridfollowing):
             "following": useridfollowing,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
-        #nodeuser =
     return
 
-#addfollowing(user_id, "19828728")
 
 def delfollowing(userid, useridfoll):
     db = client.followings
@@ -90,7 +92,6 @@ def delfollowing(userid, useridfoll):
 
 
 # Followers
-
 
 def addfollower(userid, useridfollower):
     db = client.followers
@@ -102,6 +103,7 @@ def addfollower(userid, useridfollower):
             "follower": useridfollower,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
+
     return
 
 #addfollower(user_id, "19828728")
@@ -149,24 +151,26 @@ def countlikes(userid):
     clikes = db.likes.find({"user": userid}).count()
     return clikes
 
+# MapReduce
+
 
 def getfollowins(userid):
     db = client.followings
-    result = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True})
+    result = db.followings.find({"user": userid})
     list = []
     for doc in result:
         list.append(doc)
     return list
-
 
 def getfollowers(userid):
     db = client.followers
-    result = db.followers.find({"user": userid}, {'_id': False, "user": True, "follower": True})
+    result = db.followers.find({"user": userid})
     list = []
     for doc in result:
         list.append(doc)
     return list
 
+x = getfollowers(user_id)
 
 def getlikes(userid):
     db = client.likes
@@ -272,7 +276,7 @@ def trendingtopicuser(userid):
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-#print x
+print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
