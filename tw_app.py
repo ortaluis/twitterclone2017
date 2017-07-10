@@ -3,6 +3,7 @@ from datetime import datetime
 from bson.objectid import ObjectId
 from py2neo import Graph, Node, Relationship
 from bson.code import Code
+import python_neo4j
 import pprint
 
 
@@ -81,6 +82,7 @@ def addfollowing(userid, useridfollowing):
             "following": useridfollowing,
             "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             })
+        relation = python_neo4j.add_node(userid, useridfollowing)
     return
 
 

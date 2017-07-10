@@ -55,15 +55,15 @@ class S(BaseHTTPRequestHandler):
 
             #self.r_server.delete('counter')
 
-             # 2.you get them from redis..but wit: where did we defined "last-usermae?"
+            # 2.you get them from redis..but wit: where did we defined "last-usermae?"
             last_username = self.r_server.get('last_username')
             #resultNumberOfUsers = self.r_server.hget('usersNumber', 'numberOfUsers')
 
-           #1. defined by you..
+            #1. defined by you..
             numberOfUsers ="0"
-            
+
             if self.r_server.exists('counter'):
-                numberOfUsers = self.r_server.get('counter')            
+                numberOfUsers = self.r_server.get('counter')
                 print 'Test:' + numberOfUsers
 
             if not last_username:
@@ -86,7 +86,7 @@ class S(BaseHTTPRequestHandler):
             olga_password = self.r_server.hget('users', "olga")
 
             if olga_password == "1234":
-               print 'right password'
+                print 'right password'
 
             if not last_username:
                 last_username = "EMPTY"
@@ -108,7 +108,7 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
 
-        #If the data belongs to a form with this tag.. (that was defined in index.html- the data of do_GET)    
+        #If the data belongs to a form with this tag.. (that was defined in index.html- the data of do_GET)
         if(self.path == "/submit-exist"):
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
             parsed_data = parse_qs(post_data)
@@ -117,14 +117,14 @@ class S(BaseHTTPRequestHandler):
                 with open('username-NOTreceived.html', 'r') as myfile:
                     data=myfile.read()
                     self.wfile.write(data)
-                return       
-             #here you can add stuff to my-twiiter page..
+                return
+                #here you can add stuff to my-twiiter page..
             with open('my-twitter.html', 'r') as myfile:
                 data=myfile.read()
                 self.wfile.write(data)
 
 
-       #submit-username is not a page in html but a form that is found in a html page called..sign-up.html
+                #submit-username is not a page in html but a form that is found in a html page called..sign-up.html
         elif(self.path == "/submit-username"):
             post_data = self.rfile.read(content_length) # <--- Gets the data itself
             parsed_data = parse_qs(post_data)
@@ -133,24 +133,21 @@ class S(BaseHTTPRequestHandler):
                 with open('username-NOTreceived.html', 'r') as myfile:
                     data=myfile.read()
                     self.wfile.write(data)
-                return       
+                return
 
-            #like this example: you can set stuff in redis
+                #like this example: you can set stuff in redis
             #'here!!' we defined a variable that we want later to use in a page in html..
             self.r_server.set('last_username', parsed_data['username'][0])
-
             self.r_server.set('last_password', parsed_data['password'][0])
 
             self.r_server.set(parsed_data['username'][0],parsed_data['password'][0])
-
-
-
+            pythom_neo4j.add_node(parsed_data['username'][0])
             print 'previous key set the value: ' + self.r_server.get(parsed_data['username'][0])
 
             self.r_server.hset('users', parsed_data['username'][0],parsed_data['password'][0] )
             print 'the value for this key in the hash is %s:'% self.r_server.hget('users',parsed_data['username'][0] )
 
-            
+
             if(not self.r_server.exists('counter')):
                 self.r_server.set('counter',1)
             else:
@@ -178,8 +175,8 @@ class S(BaseHTTPRequestHandler):
 
         else:
             self.wfile.write("Form handler not found!")
-        
-def run(server_class=HTTPServer, handler_class=S, port=8080):    
+
+def run(server_class=HTTPServer, handler_class=S, port=8080):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print 'Starting httpd...'
