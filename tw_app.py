@@ -55,19 +55,6 @@ def getusertimeline(userid):
         print(document)
     return
 
-
-#def gettimeline(userid):
-#    db = client.followings
-#    db2 = client.tweets
-#    follwi = db.followings.find({"user": userid})
-#    foll = []
-#    for doc in foll:
-#        #foll.append(doc)
-#        print (doc)
-#    return
-
-#gettimeline(user_id)
-
 # Following
 
 
@@ -107,7 +94,6 @@ def addfollower(userid, useridfollower):
 
     return
 
-#addfollower(user_id, "19828728")
 
 #Likes
 
@@ -270,27 +256,4 @@ def trendingtopicuser(userid):
     for doc in result.find().sort("value", -1).limit(10):
         print doc
     return
-
-#trendingtopic(user_id)
-
-#x = getfollowers(user_id)
-#x = countfollowers(user_id)
-#x = countfollowings(user_id)
-#x = counttweets(user_id)
-#print x
-#deletedtweet(user_id, id_tweet)
-#tweetpost(user_id, tweet__post)
-#delfollowing(user_id, userfoll1)
-#dellike(user_id, id_tweet)
-#addfollower(user_id, userfoll1)
-#addfollower(user_id, userfoll2)
-#addfollowing(user_id, userfoll2)
-#addfollowing(user_id, userfoll3)
-#addfollowing(user_id, userfoll4)
-#addfollowing(user_id, userfoll5)
-#addfollowing(user_id, userfoll6)
-#newuser(user_id)
-#getusertimeline(user_id)
-#gettimeline(user_id, x)
-#addlike(user_id, id_tweet)
 
