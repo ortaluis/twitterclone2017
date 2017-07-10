@@ -22,9 +22,13 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import SocketServer
 import redis
-import tw_app
+import python_neo4j
+from py2neo import Graph, Node, Relationship
+
+
 
 graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
+
 
 
 

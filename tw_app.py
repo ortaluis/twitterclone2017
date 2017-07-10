@@ -7,7 +7,7 @@ import pprint
 
 
 client = MongoClient('mongodb://localhost:27017/')
-graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
+graph = Graph("http://neo4j:123@localhost:7474/db/data/")
 
 user_id = "19828717"
 userfoll1 = "19828718"
@@ -170,7 +170,7 @@ def getfollowers(userid):
         list.append(doc)
     return list
 
-x = getfollowers(user_id)
+#x = getfollowers(user_id)
 
 def getlikes(userid):
     db = client.likes
@@ -276,7 +276,7 @@ def trendingtopicuser(userid):
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-print x
+#print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)
