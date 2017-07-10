@@ -15,11 +15,23 @@ Send a POST request::
     curl -d "foo=bar&bin=baz" http://localhost
 
 """
+
 from pymongo import MongoClient
+from py2neo import Graph, Node
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import SocketServer
 import redis
+import python_neo4j
+from py2neo import Graph, Node, Relationship
+
+
+
+graph = Graph("http://neo4j:123123@localhost:7474/db/data/")
+
+
+
+
 
 class S(BaseHTTPRequestHandler):
 
@@ -126,9 +138,13 @@ class S(BaseHTTPRequestHandler):
             #like this example: you can set stuff in redis
             #'here!!' we defined a variable that we want later to use in a page in html..
             self.r_server.set('last_username', parsed_data['username'][0])
+
             self.r_server.set('last_password', parsed_data['password'][0])
 
             self.r_server.set(parsed_data['username'][0],parsed_data['password'][0])
+
+
+
             print 'previous key set the value: ' + self.r_server.get(parsed_data['username'][0])
 
             self.r_server.hset('users', parsed_data['username'][0],parsed_data['password'][0] )
