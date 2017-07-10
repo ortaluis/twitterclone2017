@@ -55,7 +55,7 @@ def getusertimeline(userid):
 #def gettimeline(userid):
 #    db = client.followings
 #    db2 = client.tweets
-#    follwi = db.followings.find({"user": userid}, {'_id': False, "user": True, "following": True, })
+#    follwi = db.followings.find({"user": userid})
 #    foll = []
 #    for doc in foll:
 #        #foll.append(doc)
@@ -104,7 +104,7 @@ def addfollower(userid, useridfollower):
             })
     return
 
-addfollower(user_id, "19828728")
+#addfollower(user_id, "19828728")
 
 #Likes
 
@@ -161,7 +161,16 @@ def getfollowins(userid):
 
 def getfollowers(userid):
     db = client.followers
-    result = db.followers.find({"user": userid}, {'_id': False, "user": False, "follower": True})
+    result = db.followers.find({"user": userid}, {'_id': False, "user": True, "follower": True})
+    list = []
+    for doc in result:
+        list.append(doc)
+    return list
+
+
+def getlikes(userid):
+    db = client.likes
+    result = db.likes.find({"user": userid})
     list = []
     for doc in result:
         list.append(doc)
@@ -213,13 +222,57 @@ def trendingtopic(userid):
         print doc
     return
 
+
+def trendingtopicuser(userid):
+    db = client.tweets
+    map = Code("""
+    function() {
+    var word = this.tweet_post.split(" ");
+
+    for (var i = word.length - 1; i >= 0; i--) {
+        if (word[i])  {
+            emit(word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    
+    for (var i = word.length - 1; i > 0; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#"))  {
+            emit(word[i-1].replace(/",@"/g, "").trim() + " " + word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    for (var i = word.length - 1; i > 1; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#") || (word[i-2].charAt(0) != "#"))  {
+            emit(word[i-2].replace(/",@"/g, "").trim() + " " + word[i-1].replace(/",@"/g, "").trim()+ " " + word[i].replace(/",@"/g, "").trim(), 1);
+            }
+    }
+    
+    for (var i = word.length - 1; i > 2; i--) {
+        if ((word[i].charAt(0) != "#") || (word[i-1].charAt(0) != "#") || (word[i-2].charAt(0) != "#") || (word[i-3].charAt(0) != "#"))  {
+            emit(word[i-3].replace(/",@"/g, "").trim() + " " + word[i-2].replace(/",@"/g, "").trim()+ " " + word[i-1].replace(/",@"/g, "").trim(), 1)+ " " + word[i].replace(/",@"/g, "");
+            }
+    }
+    
+    };
+    """)
+    red = Code("function (key, values) {"
+               "var total = 0;"
+               "for (var i = 0; i < values.length; i++) {"
+               "total += values[i];"
+               "  }"
+               "  return total;"
+               "}")
+    result = db.tweets.map_reduce(map, red, "Trending Topic Global", query={"user": userid})
+    for doc in result.find().sort("value", -1).limit(10):
+        print doc
+    return
+
 #trendingtopic(user_id)
 
-x = getfollowers(user_id)
+#x = getfollowers(user_id)
 #x = countfollowers(user_id)
 #x = countfollowings(user_id)
 #x = counttweets(user_id)
-print x
+#print x
 #deletedtweet(user_id, id_tweet)
 #tweetpost(user_id, tweet__post)
 #delfollowing(user_id, userfoll1)

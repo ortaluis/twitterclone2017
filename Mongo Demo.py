@@ -16,12 +16,14 @@ menu = "Menu"
 while menu == "Menu":
     if menu == "Menu":
         print "What's new?" \
-              "[1] Post a tweet" \
-              "[2] Follow a user" \
-              "[3] Get your Timeline" \
-              "[4] Trending Topics" \
-              "[5] Show Followings" \
-              "[6] Show Followers"
+              "[1] Post a tweet -" \
+              "[2] Follow a user -" \
+              "[3] Get your Timeline -" \
+              "[4] Trending Topics -" \
+              "[5] Show Followings -" \
+              "[6] Show Followers -" \
+              "[7] Your Topics" \
+              "[8] Show your likes"
     menu = raw_input('Enter your input:')
 
     if menu == "1":
@@ -54,6 +56,18 @@ while menu == "Menu":
     if menu == "6":
         x = tw_app.getfollowers(username)
         print x
+        menu = "Menu"
+
+    if menu == "7":
+        x = tw_app.trendingtopicuser(username)
+        print x
+        menu = "Menu"
+
+    if menu == "8":
+        x = tw_app.getlikes(username)
+        print x
+        menu = "Menu"
+
 menu = "Menu"
 
 

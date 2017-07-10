@@ -86,3 +86,8 @@ map = Code("function() { emit(this.user, this.following);}")
                 emit(word[i].replace(/","/g, "").trim(), 1);
                 }
             else{
+            }
+
+    if menu != "1" or menu != "2" or menu != "3" or menu != "4" or menu != "5" or menu != "6" or menu != "7" or menu != "8":
+            menu = "Menu"
+            print "Invalid option, please try again"
